@@ -7,7 +7,7 @@ const DEBOUNCE_DELAY = 300;
 const formSearch = document.querySelector('#search-box');
 // console.log(formSearch);
 
-formSearch.addEventListener('input', _.debounce(onInput), DEBOUNCE_DELAY);   
+formSearch.addEventListener('input',debounce((onInput), DEBOUNCE_DELAY))  ;   
 
 function onInput(evt) {
     evt.preventDefault();
