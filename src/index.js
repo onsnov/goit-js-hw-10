@@ -15,17 +15,43 @@ formSearch.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
 
 function onInput(evt) {
     evt.preventDefault();
+    onClearInpun();
+    
     const value = formSearch.value.trim();     
-    if (!value)  Notify.success('Sol lucet omnibus') ;
+    // if (!value)  Notify.success('Sol lucet omnibus') ;
     // console.log(value);
     fetchCountries(value)
-        .then((res) =>
-            console.log(res));
-         
+        .then(renderCountries)
+        .then(res => {
+        
+      if (res.length=== '') {
+        throw new Error(res.status);
+      }
+        //  return res.json();
+        
+    })
+    
+        // .then((res) => {
+        //     if (res.length > 10) alertMatches();
+        //     return;} 
+                    
 }
-
 function onClearInpun(){ 
     countryList.innerHTML = '';
+    
+}
+
+function renderCountries(countries) {
+  if (countries.length > 10) {
+    alertMatches();
+    return;
+  }
+}
+
+function alertMatches() { 
+     Notify.info(
+       'Too many matches found. Please enter a more specific name.'
+     );
 }
 
 
