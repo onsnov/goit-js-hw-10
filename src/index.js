@@ -20,7 +20,7 @@ function onInput(evt) {
     // console.log(value);
     fetchCountries(value)
         .then((res) =>
-            console.log(value));
+            console.log(res));
          
 }
 
