@@ -1,11 +1,10 @@
-export function fetchCountries(name) {
-
-  const URL = `https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,flags,languages`;
-
-    
-    return fetch(`${URL}?aq=${name}&searchIn=title&pageSize=10`).then(res =>
-      res.json()
-    );
-  
-  // fetchCountries('Spain');
+export default function fetchCountries(name) {
+  return fetch(
+    `https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,flags,languages`
+  ).then(response => {
+    if (!response.ok) {
+      throw new Error();
+    }
+    return response.json();
+  });
 }

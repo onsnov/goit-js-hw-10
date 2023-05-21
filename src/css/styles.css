@@ -18,3 +18,18 @@ body {
   max-width: 800px;
   margin-bottom: 16px;
 }
+.card-item {
+  display: flex;
+  align-items: center;
+}
+
+.card-img {
+  margin-right: 15px;
+  width: 80px;
+  height: 50px;
+}
+
+.card-img--big {
+  width: 160px;
+  height: 100px;
+}

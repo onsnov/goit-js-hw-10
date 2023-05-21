@@ -1,52 +1,45 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
-import { fetchCountries } from './fetchCountries';
+import fetchCountries from './fetchCountries';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-
 
 const DEBOUNCE_DELAY = 300;
 
-const formSearch = document.querySelector('#search-box');
-const countryList = document.querySelector('.country-list');
-const countryInfo = document.querySelector('.country-info');
+const refs = {
+  input: document.querySelector('#search-box'),
+  countryList: document.querySelector('.country-list'),
+  countryInfo: document.querySelector('.country-info'),
+};
 
+refs.input.addEventListener('input', debounce(serachCounrty, DEBOUNCE_DELAY));
 
+function serachCounrty(event) {
+  event.preventDefault();
+  const value = refs.input.value.trim();
+  // console.log(value);
+  if (value == '' || value == ' ') {
+    return;
+  }
 
-formSearch.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));   
-
-function onInput(evt) {
-    evt.preventDefault();
-   
-    const value = formSearch.value.trim();
-   
-    fetchCountries(value).then(renderCountries).catch(onEror)
+  fetchCountries(value).then(onCreateCard).catch(onFetchError);
 }
 
-
-function renderCountries(arrayOfcountries) {
-   if (arrayOfcountries.length === 1) {
-     oneCounty(arrayOfcountries);
-   } else {
-     onCountryList(arrayOfcountries);
-   }
-    console.log(arrayOfcountries)
+function onCreateCard(array) {
+  if (array.length === 1) {
+    oneCounty(array);
+  } else {
+    countryList(array);
+  }
 }
 
-function alertMatches() { 
-     Notify.info(
-       'Too many matches found. Please enter a more specific name.'
-     );
-}
-
-
-function onCountryList(arrayOfcountries) {
-  if (arrayOfcountries.length > 10) {
+function countryList(array) {
+  if (array.length > 10) {
     return Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
   }
 
-  const list = arrayOfcountries
+  const list = array
     .map(({ name, flags }) => {
       return `
         <li class="card-item">
@@ -55,19 +48,22 @@ function onCountryList(arrayOfcountries) {
        </li>
        `;
     })
-      .join('');    
-    clearPage();
-    countryList.insertAdjacentHTML('beforeend', list);
+    .join('');
+
+  // console.log(list);
+
+  clearPage();
+  refs.countryList.insertAdjacentHTML('beforeend', list);
 }
 
-    function oneCounty(arrayOfcountries) {
-      const country = arrayOfcountries
-        .map(({ name, flags, capital, population, languages }) => {
-          return `
+function oneCounty(array) {
+  const country = array
+    .map(({ name, flags, capital, population, languages }) => {
+      return `
         <div class="card-heading">
             <img class="card-img card-img--big" src="${flags.svg}" alt="${
-            flags.alt
-          }">
+        flags.alt
+      }">
             <h2 class="card-title">${name.official}</h2>
         </div>
         <div class="card-body">
@@ -76,20 +72,23 @@ function onCountryList(arrayOfcountries) {
             <p class="card-text"><b>Languages:</b> ${Object.values(
               languages
             ).join(', ')}</p>
-        </div>)
+        </div>
         `;
-        }).join('');
-         clearPage();
-         countryInfo.insertAdjacentHTML('beforeend', country);
-    }
+    })
+    .join('');
 
+  // refs.countryInfo.innerHTML(country);
+  // console.log(country)
 
-function clearPage() {
-  countryInfo.innerHTML = '';
-  countryList.innerHTML = '';
+  clearPage();
+  refs.countryInfo.insertAdjacentHTML('beforeend', country);
 }
 
-function onEror(error) {
-  console.log(error);
-  //     Notify.failure("Oops, there is no country with that name");
-};
+function clearPage() {
+  refs.countryInfo.innerHTML = '';
+  refs.countryList.innerHTML = '';
+}
+
+function onFetchError() {
+  Notify.failure('Oops, there is no country with that name');
+}
