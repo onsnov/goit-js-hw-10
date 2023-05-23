@@ -18,6 +18,7 @@ function serachCounrty(event) {
   const value = refs.input.value.trim();
   // console.log(value);
   if (value == '' || value == ' ') {
+    clearPage();
     return;
   }
 
@@ -34,9 +35,11 @@ function onCreateCard(array) {
 
 function countryList(array) {
   if (array.length > 10) {
+    clearPage();
     return Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
+    
   }
 
   const list = array
@@ -91,4 +94,5 @@ function clearPage() {
 
 function onFetchError() {
   Notify.failure('Oops, there is no country with that name');
+  clearPage();
 }
